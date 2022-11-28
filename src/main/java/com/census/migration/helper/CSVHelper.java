@@ -25,7 +25,7 @@ public class CSVHelper {
 
     public static List<SourceData> csvToSourceData(InputStream is) {
         try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                CSVParser csvParser = new CSVParser(fileReader,
+            CSVParser csvParser = new CSVParser(fileReader,
                                                     CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
             List<SourceData> sourceDataList = new ArrayList<>();
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
@@ -43,6 +43,17 @@ public class CSVHelper {
                 sourceDataList.add(sourceData);
             }
             return sourceDataList;
+        } catch (IOException e) {
+            throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
+        }
+    }
+
+    public static List<String> getHeaderList(InputStream is) {
+        try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            CSVParser csvParser = new CSVParser(fileReader,
+                                                CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreHeaderCase().withTrim());) {
+            return csvParser.getHeaderNames();
+
         } catch (IOException e) {
             throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
         }
